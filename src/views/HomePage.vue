@@ -51,7 +51,9 @@ import {
   IonCardTitle,
   IonCardHeader,
   IonProgressBar,
-  IonRange
+  IonRange,
+  IonButton,
+  IonIcon,
 } from "@ionic/vue";
 import { reactive } from "vue";
 import { playForward, repeat, play, playBack, shuffle } from "ionicons/icons";
