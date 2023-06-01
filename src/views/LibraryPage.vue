@@ -44,7 +44,7 @@
         </ion-content>
       </ion-modal>
       <!-- 全部歌曲列表 -->
-      <ion-list class="list">
+      <ion-list>
         <!-- 播放时突出 -->
         <ion-item v-for="item in fetchAllSong()" :key="item.id" :color="item.id == playing ? 'light' : ''">
           <!-- 红心部分 -->
@@ -154,5 +154,7 @@ const testPlaylist = [
 ::webkit-scrollbar {
   display: none;
 }
+
+
 
 </style>

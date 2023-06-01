@@ -9,7 +9,7 @@
         </ion-tab-button>
 
         <ion-tab-button tab="library" href="/library">
-          <ion-icon :icon="library" />
+          <ion-icon :icon="musicalNote" />
           <ion-label>Library</ion-label>
         </ion-tab-button>
 
@@ -17,25 +17,20 @@
           <ion-icon :icon="search" />
           <ion-label>Search</ion-label>
         </ion-tab-button>
+
+        <ion-tab-button tab="playlist" href="/playlist">
+          <ion-icon :icon="list" />
+          <ion-label>playlist</ion-label>
+        </ion-tab-button>
       </ion-tab-bar>
     </ion-tabs>
   </ion-page>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
   import { IonPage, IonTabs, IonRouterOutlet, IonTabBar, IonTabButton, IonLabel, IonIcon } from '@ionic/vue';
 
-  import { playCircle, radio, library, search } from 'ionicons/icons';
+  import { playCircle, radio, search, musicalNote, list } from 'ionicons/icons';
 
-  export default {
-    components: { IonPage, IonTabs, IonRouterOutlet, IonTabBar, IonTabButton, IonLabel, IonIcon },
-    data() {
-      return {
-        playCircle,
-        radio,
-        library,
-        search,
-      };
-    },
-  };
+
 </script>
