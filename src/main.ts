@@ -3,6 +3,7 @@ import './style.css'
 import App from './App.vue'
 import { createPinia } from 'pinia'
 import { IonicVue } from '@ionic/vue';
+import router from '@/router/index.ts'
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/vue/css/core.css';
@@ -22,8 +23,11 @@ import '@ionic/vue/css/display.css';
 
 const pinia = createPinia()
 
+
+
 createApp(App)
     .use(pinia)
-    .use(IonicVue)
+    .use(IonicVue, { mode: 'ios' })
+    .use(router)
     .mount('#app')
     .$nextTick(() => postMessage({ payload: 'removeLoading' }, '*'))

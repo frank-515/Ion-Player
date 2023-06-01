@@ -27,6 +27,10 @@ const routes: Array<RouteRecordRaw> = [
         path: 'search',
         component: () => import('@/views/SearchPage.vue'),
       },
+      {
+        path: 'playlist',
+        component: () => import('@/views/PlaylistPage.vue'),
+      },
     ],
   },
 ];
