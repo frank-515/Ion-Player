@@ -46,22 +46,37 @@
       <!-- 全部歌曲列表 -->
       <ion-list>
         <!-- 播放时突出 -->
-        <ion-item v-for="item in fetchAllSong()" :key="item.id" :color="item.id == playing ? 'light' : ''">
+        <ion-item
+          v-for="item in fetchAllSong()"
+          :key="item.id"
+          :color="item.id == playing ? 'light' : ''"
+        >
           <!-- 红心部分 -->
-            <strong slot="start" style="position: relative; top: 3px;" @click="onLike()">
-              <div v-if="item.liked"> <ion-icon :icon="heart" slot="icon-only" style="color:crimson;"></ion-icon></div>
-              <div v-else><ion-icon :icon="heartOutline" slot="icon-only"></ion-icon></div>
-            </strong>
-            <!-- 歌曲信息 -->
-            <div slot="end" class="small-grey">
-              {{ formatSeconds(item.duration) }}
+          <strong
+            slot="start"
+            style="position: relative; top: 3px"
+            @click="onLike()"
+          >
+            <div v-if="item.liked">
+              <ion-icon
+                :icon="heart"
+                slot="icon-only"
+                style="color: crimson"
+              ></ion-icon>
             </div>
-            <!-- 作者-时长 -->
-            <ion-label @click="play(item.id)">{{ item.title }}</ion-label>
-            <ion-label></ion-label>
-            <ion-label class="small-grey">{{ item.artist }}</ion-label>
+            <div v-else>
+              <ion-icon :icon="heartOutline" slot="icon-only"></ion-icon>
+            </div>
+          </strong>
+          <!-- 歌曲信息 -->
+          <div slot="end" class="small-grey">
+            {{ formatSeconds(item.duration) }}
+          </div>
+          <!-- 作者-时长 -->
+          <ion-label @click="play(item.id)">{{ item.title }}</ion-label>
+          <ion-label></ion-label>
+          <ion-label class="small-grey">{{ item.artist }}</ion-label>
         </ion-item>
-        
       </ion-list>
     </ion-content>
   </ion-page>
@@ -86,10 +101,11 @@ import {
   IonCardContent,
   IonAvatar,
   IonCardHeader,
+  
 } from "@ionic/vue";
 import { ref, reactive } from "vue";
 import { add, folder, heart, heartOutline, play } from "ionicons/icons";
-import { formatSeconds } from '@/misc/util.ts'
+import { formatSeconds } from "@/misc/util.ts";
 
 const isOpen = ref(false);
 const setOpen = (isOpen_: boolean) => {
@@ -101,42 +117,90 @@ const libraryForm = reactive({
   Path: "",
 });
 
-
-const playing = ref(4)
-
+const playing = ref(4);
 
 // 页面响应代码
 const play = (id: number) => {
-  alert(id)
-}
+  alert(id);
+};
 
 const onLike = () => {
-  alert('like')
- 
-  
-}
+  alert("like");
+};
 
 const fetchAllSong = () => {
   return testPlaylist;
 };
 
-
 const testPlaylist = [
-  {id:1, title: 'Ode to Joy', artist: 'Beethoven', duration: 243, liked: true},
-  {id:2, title: 'Moonlight Sonata', artist: 'Beethoven', duration: 332, liked: false},
-  {id:3, title: 'Für Elise', artist: 'Beethoven', duration: 181, liked: false},
-  {id:4, title: 'Spring', artist: 'Vivaldi', duration: 345, liked: true},
-  {id:5, title: 'Summer', artist: 'Vivaldi', duration: 311, liked: false},
-  {id:6, title: 'Autumn', artist: 'Vivaldi', duration: 330, liked: false},
-  {id:7, title: 'Winter', artist: 'Vivaldi', duration: 288, liked: true},
-  {id:8, title: 'Air on the G String', artist: 'Bach', duration: 358, liked: false},
-  {id:9, title: 'Brandenburg Concerto No. 3', artist: 'Bach', duration: 320, liked: false},
-  {id:10, title: 'Goldberg Variations', artist: 'Bach', duration: 544, liked: true},
-  {id:11, title: 'Toccata and Fugue in D Minor', artist: 'Bach', duration: 535, liked: false},
-  {id:12, title: 'Prelude in C Major', artist: 'Bach', duration: 142, liked: true},
-  {id:13, title: 'Jesu, Joy of Man\'s Desiring', artist: 'Bach', duration: 327, liked: true},
+  {
+    id: 1,
+    title: "Ode to Joy",
+    artist: "Beethoven",
+    duration: 243,
+    liked: true,
+  },
+  {
+    id: 2,
+    title: "Moonlight Sonata",
+    artist: "Beethoven",
+    duration: 332,
+    liked: false,
+  },
+  {
+    id: 3,
+    title: "Für Elise",
+    artist: "Beethoven",
+    duration: 181,
+    liked: false,
+  },
+  { id: 4, title: "Spring", artist: "Vivaldi", duration: 345, liked: true },
+  { id: 5, title: "Summer", artist: "Vivaldi", duration: 311, liked: false },
+  { id: 6, title: "Autumn", artist: "Vivaldi", duration: 330, liked: false },
+  { id: 7, title: "Winter", artist: "Vivaldi", duration: 288, liked: true },
+  {
+    id: 8,
+    title: "Air on the G String",
+    artist: "Bach",
+    duration: 358,
+    liked: false,
+  },
+  {
+    id: 9,
+    title: "Brandenburg Concerto No. 3",
+    artist: "Bach",
+    duration: 320,
+    liked: false,
+  },
+  {
+    id: 10,
+    title: "Goldberg Variations",
+    artist: "Bach",
+    duration: 544,
+    liked: true,
+  },
+  {
+    id: 11,
+    title: "Toccata and Fugue in D Minor",
+    artist: "Bach",
+    duration: 535,
+    liked: false,
+  },
+  {
+    id: 12,
+    title: "Prelude in C Major",
+    artist: "Bach",
+    duration: 142,
+    liked: true,
+  },
+  {
+    id: 13,
+    title: "Jesu, Joy of Man's Desiring",
+    artist: "Bach",
+    duration: 327,
+    liked: true,
+  },
 ];
-
 </script>
 
 <style scoped>
@@ -148,7 +212,4 @@ const testPlaylist = [
 ::webkit-scrollbar {
   display: none;
 }
-
-
-
 </style>
