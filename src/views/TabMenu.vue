@@ -29,7 +29,6 @@
 
 <script setup lang="ts">
   import { IonPage, IonTabs, IonRouterOutlet, IonTabBar, IonTabButton, IonLabel, IonIcon } from '@ionic/vue';
-
   import { playCircle, radio, search, musicalNote, list } from 'ionicons/icons';
 
 

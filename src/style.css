@@ -12,6 +12,24 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
+  
+
+  --header-img-height: 62%;
+  --cover-width: 240px;
+  --cover-hight: 300px;
+
+  --background-darker: var(--ion-color-step-200, #e9edf3);
+
+  --text-dark: var(--ion-color-step-850, #27323f);
+  --text-darker: var(--ion-color-step-950, #0e151f);
+
+  --text-light: var(--ion-color-step-650, #5b708b);
+  --text-lighter: var(--ion-color-step-550, #73849a);
+  --text-lightest: var(--ion-color-step-300, #b2becd);
+}
+
+::-webkit-scrollbar {
+  display: none;
 }
 
 a {

@@ -89,7 +89,7 @@ import {
 } from "@ionic/vue";
 import { ref, reactive } from "vue";
 import { add, folder, heart, heartOutline, play } from "ionicons/icons";
-import { it } from "node:test";
+import { formatSeconds } from '@/misc/util.ts'
 
 const isOpen = ref(false);
 const setOpen = (isOpen_: boolean) => {
@@ -104,13 +104,7 @@ const libraryForm = reactive({
 
 const playing = ref(4)
 
-// 格式化秒
-// Generates By GPT-3.5
-function formatSeconds(seconds: number): string {
-  const minutes = Math.floor(seconds / 60);
-  const remainingSeconds = seconds % 60;
-  return `${minutes}:${remainingSeconds.toLocaleString('en-US', {minimumIntegerDigits: 2, useGrouping: false})}`;
-}
+
 // 页面响应代码
 const play = (id: number) => {
   alert(id)

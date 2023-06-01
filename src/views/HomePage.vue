@@ -13,11 +13,10 @@
         <ion-card-content>
           <h2>{{ playingStatus.title }}</h2>
           <p>{{ playingStatus.artist }}</p>
-          <!-- <ion-progress-bar :value="playingStatus.percentage"></ion-progress-bar> -->
-          <ion-range aria-label="Temperature">
-            <div slot="start">s</div>
-            <div slot="end">s</div>
-            <div slot="label">s</div>
+          <!-- <ion-range :value="100 * playingStatus.percentage"> -->
+            <ion-range @ionChange="onChangeRange">
+            <div slot="start">{{ formatSeconds(playingStatus.duration * playingStatus.percentage) }}</div>
+            <div slot="end">-{{ formatSeconds(playingStatus.duration * (1 - playingStatus.percentage)) }}</div>
           </ion-range>
           <ion-button color="dark" fill="clear" size="small">
             <ion-icon slot="icon-only" :icon="shuffle"></ion-icon>
@@ -52,17 +51,29 @@ import {
   IonCardTitle,
   IonCardHeader,
   IonProgressBar,
+  IonRange
 } from "@ionic/vue";
 import { reactive } from "vue";
 import { playForward, repeat, play, playBack, shuffle } from "ionicons/icons";
+import { formatSeconds } from '@/misc/util.ts'
+import { log } from "console";
+import { setInterval } from "timers";
+
 
 const playingStatus = reactive({
   title: "Symphony No. 6 in A Minor I. Allegro energico, ma non troppo.",
   artist: "Mahler Gustav",
-  percentage: 0.25,
+  percentage: 0,
   order: "random",
   cover: "@/assets/cover.png",
+  duration: 203,
 });
+
+
+const onChangeRange = (event: any) => {
+  playingStatus.percentage = event.detail.value / 100
+  console.log(playingStatus.percentage);
+}
 </script>
 
 <style scoped>
