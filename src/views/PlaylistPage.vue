@@ -1,5 +1,4 @@
 <template>
-  <ion-page>
     <ion-header>
       <ion-toolbar>
         <ion-buttons slot="end">
@@ -47,21 +46,18 @@
       </ion-modal>
       <!-- 库列表 -->
       <ul class="list">
-      <ion-nav-link router-direction="forward" :component="component" v-for="lib in fetchPlaylist()" :key="lib.Name">
+      <ion-nav-link router-direction="forward" :component="PlaylistDetail" v-for="item in fetchPlaylist()" :key="item.Name">
         <div class="list-item">
-          <ion-card class="library-card" @click="selectPlaylist(lib.Name)">
+          <ion-card class="library-card" @click="selectPlaylist(item.Name)">
             <img src="@/assets/cover.png" class="header-img" />
             <div class="card-content">
-              <ion-card-title>{{ lib.Name }}</ion-card-title>
+              <ion-card-title>{{ item.Name }}</ion-card-title>
             </div>
           </ion-card>
         </div>
       </ion-nav-link>
-      
-        
       </ul>
     </ion-content>
-  </ion-page>
 </template>
   
   <script lang="ts" setup>
@@ -74,24 +70,19 @@ import {
   IonContent,
   IonTitle,
   IonIcon,
-  IonList,
   IonItem,
   IonInput,
-  IonPage,
   IonCard,
-  IonLabel,
-  IonCardContent,
-  IonAvatar,
-  IonCardHeader,
   IonTextarea,
   IonCardTitle,
-  IonNav,
   IonNavLink
 } from "@ionic/vue";
 import { ref, reactive } from "vue";
-import { add, folder } from "ionicons/icons";
+import { add } from "ionicons/icons";
 import { testLibList } from "@/misc/util";
-import { describe } from "node:test";
+import PlaylistDetail from "@/views/PlaylistDetail.vue";
+import { useGlobalStore } from "@/store/globalStore.ts"
+const globalStore = useGlobalStore()
 
 const newPlaylistInfo = reactive({
   playlistsName: '',
@@ -107,7 +98,8 @@ const setOpen = (isOpen_: boolean) => {
 };
 
 const selectPlaylist = (name: string) => {
-  alert(name)
+  // 传递参数给详情页，通过修改全局储存库
+  globalStore.lastPlaylistDetail = name
 }
 
 
