@@ -29,7 +29,7 @@ const routes: Array<RouteRecordRaw> = [
       },
       {
         path: 'playlist',
-        component: () => import('@/views/PlaylistPage.vue'),
+        component: () => import('@/views/PlaylistRoot.vue'),
       },
     ],
   },
