@@ -29,7 +29,7 @@
               placeholder="playlist"
               labelPlacement="fixed"
               :value="newPlaylistInfo.playlistsName"
-            ></ion-input>
+            ></ion-input> 
           </ion-item>
           <ion-item>
             <ion-textarea

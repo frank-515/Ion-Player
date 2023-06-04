@@ -8,7 +8,7 @@
     <ion-content>
       <ion-card class="music-card">
         <ion-card-header>
-          <img src="@/assets/cover.png" />
+          <img src="http://localhost:5151/cover/home/frank515/Desktop/test.mp3" />
         </ion-card-header>
         <ion-card-content>
           <h2>{{ playingStatus.title }}</h2>
@@ -55,12 +55,29 @@ import {
   IonButton,
   IonIcon,
 } from "@ionic/vue";
-import { reactive } from "vue";
+import { onMounted, reactive, getCurrentInstance } from "vue";
 import { playForward, repeat, play, playBack, shuffle } from "ionicons/icons";
 import { formatSeconds } from '@/misc/util.ts'
-import { log } from "console";
-import { setInterval } from "timers";
+import TabMenu from "@/views/TabMenu.vue";
+import { title } from "process";
 
+const app = getCurrentInstance()?.appContext.app
+const audioEvents = app!.config.globalProperties.$audioEvents
+onMounted(() => {
+  audioEvents.emit('setSrc', '/home/frank515/Desktop/test.mp3')
+  audioEvents.emit('play')
+  fetch('http://localhost:5151/detail/home/frank515/Desktop/test.mp3')
+    .then(response => {
+      console.log(response.json());
+      
+      return response.json()
+    })
+    .then(data => {
+      playingStatus.title = data.title
+      playingStatus.artist = data.artist
+    })
+
+})
 
 const playingStatus = reactive({
   title: "Symphony No. 6 in A Minor I. Allegro energico, ma non troppo.",
@@ -76,15 +93,11 @@ const onChangeRange = (event: any) => {
   playingStatus.percentage = event.detail.value / 100
   console.log(playingStatus.percentage);
 }
+
+
 </script>
 
 <style scoped>
-.example-content {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-}
 
 .music-card h2 {
   font-weight: 600;
