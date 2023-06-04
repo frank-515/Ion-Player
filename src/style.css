@@ -1,6 +1,6 @@
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
+  line-height: 1.52;
   font-weight: 400;
 
   color-scheme: light dark;
@@ -15,8 +15,8 @@
   
 
   --header-img-height: 62%;
-  --cover-width: 220px;
-  --cover-hight: 220px;
+  --cover-width: 160px;
+  --cover-hight: 160px;
 
   --background-darker: var(--ion-color-step-200, #e9edf3);
 
