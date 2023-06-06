@@ -3,8 +3,18 @@
 function formatSeconds(seconds: number): string {
   const minutes = Math.floor(seconds / 60);
   const remainingSeconds = seconds % 60;
-  return `${minutes}:${remainingSeconds.toFixed(0).padStart(2, '0')}`;
+  if (minutes != undefined && minutes != null) return `${minutes}:${remainingSeconds.toFixed(0).padStart(2, '0')}`;
+  else return "00:00"
 }
+
+import path from 'path'
+import os from 'os'
+function fromHomeDir(relative: string) {
+  const homeDir = os.homedir()
+  return path.join(homeDir, relative)
+}
+
+
 
 const testPlaylist = [
   { id: 1, title: 'Ode to Joy', artist: 'Beethoven', duration: 243, liked: true },
@@ -44,8 +54,20 @@ const testPlaylistDetails = {
   The symphony is regarded by many critics and musicologists as Beethoven's greatest work and one of the supreme achievements in the history of music.`
 }
 
+type Song = {
+  id: number | undefined;
+  title: string;
+  cover: string;
+  artist: string;
+};
+
+type TestPlaylistDetails = {
+  playlist: Song[] | undefined;
+  playlistName: string;
+  description: string;
+};
 
 export {
-  formatSeconds, testPlaylist, testLibList, testPlaylistDetails
+  formatSeconds, testPlaylist, testLibList, testPlaylistDetails, fromHomeDir
 }
 
