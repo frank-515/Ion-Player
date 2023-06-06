@@ -25,7 +25,8 @@ function createWindow() {
       preload: path.join(__dirname, 'preload.js'),
       scrollBounce: true,
       nodeIntegration: true,
-      contextIsolation: false
+      contextIsolation: false,
+      webSecurity: false
     },
   })
 

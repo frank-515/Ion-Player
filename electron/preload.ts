@@ -1,7 +1,7 @@
-import { createServerWithMusicPath } from './src/fileServer'
-import { getFileList, getMP3Cover, getMusicMetadata } from './src/musicFinder'
+import { createServerWithMusicPath, initDB } from './src/fileServer'
+// import { getFileList, getMP3Cover, getMusicMetadata } from './src/musicFinder'
 
-let server; //全局可见的服务器
+// let server; //全局可见的服务器
 function initServer() {
   // Todo - 从import.meta.env中获取端口号
   server = createServerWithMusicPath(5151)
@@ -99,11 +99,11 @@ window.onmessage = ev => {
 }
 
 setTimeout(removeLoading, 4999)
+
+initDB()
 // 启动文件访问服务器
 initServer()
 
-console.log(getMusicMetadata('/home/frank515/Desktop/test.mp3'));
-console.log('ss');
 
 
 
