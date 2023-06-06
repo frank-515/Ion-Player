@@ -46,12 +46,12 @@
       </ion-modal>
       <!-- 库列表 -->
       <ul class="list">
-      <ion-nav-link router-direction="forward" :component="PlaylistDetail" v-for="item in fetchPlaylist()" :key="item.Name">
+      <ion-nav-link router-direction="forward" :component="PlaylistDetail" v-for="item in list" :key="item.playlistName">
         <div class="list-item">
-          <ion-card class="library-card" @click="selectPlaylist(item.Name)">
+          <ion-card class="library-card" @click="selectPlaylist(item.playlistName)">
             <img src="@/assets/cover.png" class="header-img" />
             <div class="card-content">
-              <ion-card-title>{{ item.Name }}</ion-card-title>
+              <ion-card-title>{{ item.playlistName }}</ion-card-title>
             </div>
           </ion-card>
         </div>
@@ -77,7 +77,7 @@ import {
   IonCardTitle,
   IonNavLink
 } from "@ionic/vue";
-import { ref, reactive } from "vue";
+import { ref, reactive, onMounted } from "vue";
 import { add } from "ionicons/icons";
 import { testLibList } from "@/misc/util";
 import PlaylistDetail from "@/views/PlaylistDetail.vue";
@@ -89,10 +89,12 @@ const newPlaylistInfo = reactive({
   description: '',
 });
 
+const list = ref<any[]>()
+
 const isOpen = ref(false);
 const setOpen = (isOpen_: boolean) => {
   isOpen.value = isOpen_;
-  addNewPlaylist(newPlaylistInfo.playlistsName, newPlaylistInfo.description)
+  if (!isOpen_) addNewPlaylist(newPlaylistInfo.playlistsName, newPlaylistInfo.description)
   newPlaylistInfo.description = ''
   newPlaylistInfo.playlistsName = ''
 };
@@ -112,12 +114,39 @@ const changeDescription = (event: any) => {
 
 const addNewPlaylist = (name: string, description: string) => {
   // 向服务端发送请求
+  const data = {playlistName: name, description: description}
+  
+  const options = {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json' // 定义请求体的数据类型为 JSON 格式
+  },
+  body: JSON.stringify(data) // 将 JavaScript 对象转换为 JSON 格式字符串存储在请求体中
+};
+fetch('http://localhost:5151/add-playlist', options) // 发送 POST 请求
+  .then(response => response.json()) // 解析响应体的 JSON 格式数据
+  .then(data => console.log(data))
+  .catch(error => console.error(error));
   fetchPlaylist()
 }
 
 const fetchPlaylist = () => {
-  return testLibList;
+  fetch('http://localhost:5151/get-playlist')
+    .then(response => {
+      return response.json()
+    })
+    .then(value => {
+      list.value = value
+      return value
+    })
+    .catch(error => {
+      console.error(error);
+    })
 };
+
+onMounted(() => {
+  fetchPlaylist()
+})
 </script>
   
   <style scoped>

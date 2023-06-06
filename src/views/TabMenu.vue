@@ -38,12 +38,17 @@
 
   // 控制全局音乐状态
   const audioEvents = new events.EventEmitter()
-  
-  // 提升到vue全局
+  const audioPlayer = ref<HTMLAudioElement>()
+
+
+    // 提升到vue全局
   const app = getCurrentInstance()?.appContext.app
   app!.config.globalProperties.$audioEvents = audioEvents
-
-  const audioPlayer = ref<HTMLAudioElement>()
+  
+  // app!.config.globalProperties.$currentDuration = audioPlayer.value?.duration
+  // Maybe I should use pinia to menage global properties
+  globalStore.duration = audioPlayer.value?.duration
+  globalStore.globalPlayerCtrl = audioEvents
 
     // 播放音频函数
     const playAudio = () => {
@@ -51,7 +56,7 @@
   }
 
   // 暂停音频函数
-  const pauseAudio = () => {
+    const pauseAudio = () => {
     audioPlayer.value?.pause()
   }
 
@@ -99,6 +104,8 @@
   const setCurrentTime = (time: number) => {
     if (audioPlayer.value) {
       audioPlayer.value.currentTime = time
+      audioPlayer.value.currentTime = time
+      audioPlayer.value.currentTime = time
     }
   }
 
@@ -107,6 +114,7 @@
       return audioPlayer.value.currentTime
     }
   }
+
 
   audioEvents.on('play', () => {
     playAudio()
@@ -119,11 +127,15 @@
   })
   audioEvents.on('setPercentage', (percentage: number) => {
     setPercentage(percentage)
+    globalStore.setPercentage(percentage)
   })
   audioEvents.on('setVolume', (volume: number) => {
     setVolume(volume)
   })
-
+  audioEvents.on('refresh', () => {
+    globalStore.setPercentage(getPercentage())    
+  })
+  app!.config.globalProperties.$getPercentage = getPercentage
 
   
 </script>

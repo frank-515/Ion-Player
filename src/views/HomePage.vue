@@ -8,30 +8,32 @@
     <ion-content>
       <ion-card class="music-card">
         <ion-card-header>
-          <img src="http://localhost:5151/cover/home/frank515/Desktop/test.mp3" />
+          <img :src="playingStatus.cover" />
         </ion-card-header>
         <ion-card-content>
           <h2>{{ playingStatus.title }}</h2>
           <p>{{ playingStatus.artist }}</p>
           <!-- <ion-range :value="100 * playingStatus.percentage"> -->
-            <ion-range @ionChange="onChangeRange">
+            <ion-range @ionChange="onChangeRange" ref="range" :value="playingStatus.percentage * 100">
             <div slot="start">{{ formatSeconds(playingStatus.duration * playingStatus.percentage) }}</div>
             <div slot="end">-{{ formatSeconds(playingStatus.duration * (1 - playingStatus.percentage)) }}</div>
           </ion-range>
-          <ion-button color="dark" fill="clear" size="small">
+          <ion-button color="dark" fill="clear" size="small" @click="onSwitchMode">
             <ion-icon slot="icon-only" :icon="shuffle"></ion-icon>
           </ion-button>
-          <ion-button color="dark" fill="clear" size="large">
+          <ion-button color="dark" fill="clear" size="large" @click="onPlayBack">
             <ion-icon slot="icon-only" :icon="playBack"></ion-icon>
           </ion-button>
-          <ion-button color="dark" fill="clear" class="button-largest">
-            <ion-icon slot="icon-only" :icon="play"></ion-icon>
+          <ion-button color="dark" fill="clear" class="button-largest" @click="onSwitchPlay">
+            <ion-icon v-if="playingStatus.isPlaying" slot="icon-only" :icon="play"></ion-icon>
+            <ion-icon v-else slot="icon-only" :icon="pause"></ion-icon>
           </ion-button>
-          <ion-button color="dark" fill="clear" size="large">
+          <ion-button color="dark" fill="clear" size="large" @click="onPlayForward">
             <ion-icon slot="icon-only" :icon="playForward"></ion-icon>
           </ion-button>
-          <ion-button color="dark" fill="clear" size="small">
-            <ion-icon slot="icon-only" :icon="repeat"></ion-icon>
+          <ion-button color="dark" fill="clear" size="small" @click="playingStatus.liked = !playingStatus.liked">
+            <ion-icon v-if="playingStatus.liked" slot="icon-only" :icon="heart" style="color:crimson;"></ion-icon>
+            <ion-icon v-else slot="icon-only" :icon="heartOutline"></ion-icon>
           </ion-button>
         </ion-card-content>
       </ion-card>
@@ -48,51 +50,102 @@ import {
   IonPage,
   IonCard,
   IonCardContent,
-  IonCardTitle,
   IonCardHeader,
-  IonProgressBar,
   IonRange,
   IonButton,
   IonIcon,
 } from "@ionic/vue";
-import { onMounted, reactive, getCurrentInstance } from "vue";
-import { playForward, repeat, play, playBack, shuffle } from "ionicons/icons";
+import { onMounted, reactive, getCurrentInstance, ref, watch } from "vue";
+import { playForward, play, playBack, shuffle, heartOutline, heart, pause } from "ionicons/icons";
 import { formatSeconds } from '@/misc/util.ts'
-import TabMenu from "@/views/TabMenu.vue";
-import { title } from "process";
+import { useGlobalStore } from "../store/globalStore";
+import EventEmitter from "events";
+const globalStore = useGlobalStore();
 
 const app = getCurrentInstance()?.appContext.app
-const audioEvents = app!.config.globalProperties.$audioEvents
-onMounted(() => {
-  audioEvents.emit('setSrc', '/home/frank515/Desktop/test.mp3')
-  audioEvents.emit('play')
-  fetch('http://localhost:5151/detail/home/frank515/Desktop/test.mp3')
+// const audioEvents = app!.config.globalProperties.$audioEvents
+// const duration = app!.config.globalProperties.$duration
+
+const audioEvents = globalStore.globalPlayerCtrl
+globalStore.homePlageCtrl = new EventEmitter();
+
+const playingStatus = reactive({
+  title: "",
+  artist: "",
+  percentage: 0,
+  order: "",
+  cover: "",
+  duration: 0,
+  liked: false,
+  isPlaying: false
+});
+const range = ref<HTMLIonRangeElement>()
+
+const onChangeRange = (event: any) => {
+  playingStatus.percentage = event.detail.value / 100
+  audioEvents?.emit('setPercentage', event.detail.value / 100)
+}
+
+const getCoverURL = (path: string) => {
+  return "http://localhost:5151/cover/" + path
+}
+
+const getDetailURL = (path: string) => {
+  return "http://localhost:5151/data/" + path
+}
+
+const init = () => {
+  playingStatus.cover = getCoverURL(globalStore.playing)
+  fetch(getDetailURL(globalStore.playing))
     .then(response => {
-      console.log(response.json());
-      
       return response.json()
     })
     .then(data => {
       playingStatus.title = data.title
       playingStatus.artist = data.artist
+      playingStatus.duration = data.duration
     })
+    .catch(error => {console.error("Page init error: " + error);})
+    // To-Do set duration currently
+}
 
+const refreshStatus = () => {
+  playingStatus.percentage = app!.config.globalProperties.$getPercentage()
+  
+}
+
+const onSwitchMode = () => {
+  
+}
+
+const onPlayBack = () => {
+
+}
+
+const onPlayForward = () => {
+
+}
+
+const onSwitchPlay = () => {
+  playingStatus.isPlaying = !playingStatus.isPlaying
+  if (!playingStatus.isPlaying) {
+    audioEvents?.emit('play')
+  } else {
+    audioEvents?.emit('pause')
+  }
+}
+
+
+onMounted(() => {
+  globalStore.setPlaying('/home/frank515/Desktop/test.mp3') 
+  audioEvents?.emit('setSrc', '/home/frank515/Desktop/test.mp3')
+  init()
+  setInterval(() => {refreshStatus()}, 1000)
 })
 
-const playingStatus = reactive({
-  title: "Symphony No. 6 in A Minor I. Allegro energico, ma non troppo.",
-  artist: "Mahler Gustav",
-  percentage: 0,
-  order: "random",
-  cover: "@/assets/cover.png",
-  duration: 203,
-});
-
-
-const onChangeRange = (event: any) => {
-  playingStatus.percentage = event.detail.value / 100
-  console.log(playingStatus.percentage);
-}
+globalStore.homePlageCtrl.on('init', () => {
+  init()
+})
 
 
 </script>

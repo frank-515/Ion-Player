@@ -46,16 +46,16 @@
       <!-- 全部歌曲列表 -->
       <ion-list>
         <!-- 播放时突出 -->
-        <ion-item
-          v-for="item in fetchAllSong()"
-          :key="item.id"
-          :color="item.id == playing ? 'light' : ''"
+          <ion-item
+          v-for="item in list"
+          :key="item.title"
+          :color="item.metadata.title == playing ? 'light' : ''"
         >
           <!-- 红心部分 -->
           <strong
             slot="start"
             style="position: relative; top: 3px"
-            @click="onLike()"
+            @click="item.liked = !item.liked"
           >
             <div v-if="item.liked">
               <ion-icon
@@ -70,13 +70,14 @@
           </strong>
           <!-- 歌曲信息 -->
           <div slot="end" class="small-grey">
-            {{ formatSeconds(item.duration) }}
+            {{ formatSeconds(item.metadata.duration) }}
           </div>
           <!-- 作者-时长 -->
-          <ion-label @click="play(item.id)">{{ item.title }}</ion-label>
+          <ion-label @click="play(item.path)">{{ item.metadata.title }}</ion-label>
           <ion-label></ion-label>
-          <ion-label class="small-grey">{{ item.artist }}</ion-label>
+          <ion-label class="small-grey">{{ item.metadata.artist }}</ion-label>
         </ion-item>
+        
       </ion-list>
     </ion-content>
   </ion-page>
@@ -103,13 +104,27 @@ import {
   IonCardHeader,
   
 } from "@ionic/vue";
-import { ref, reactive } from "vue";
+import { ref, reactive, onMounted } from "vue";
 import { add, folder, heart, heartOutline, play } from "ionicons/icons";
 import { formatSeconds } from "@/misc/util.ts";
+import { useGlobalStore } from "../store/globalStore"
+const globalStore = useGlobalStore()
+
+const audioEvents = globalStore.globalPlayerCtrl
 
 const isOpen = ref(false);
 const setOpen = (isOpen_: boolean) => {
   isOpen.value = isOpen_;
+  if (!isOpen_) {
+    fetch('http://localhost:5151/add-lib' + libraryForm.Path)
+      .then(response => {
+        console.log("added library:" + response);
+      })
+      .catch(error => {
+        console.error(error);
+      })
+      refresh();
+  }
 };
 const onSelectPath = () => {};
 const libraryForm = reactive({
@@ -117,90 +132,38 @@ const libraryForm = reactive({
   Path: "",
 });
 
-const playing = ref(4);
-
+const playing = ref('');
+const list = ref<any[]>()
 // 页面响应代码
-const play = (id: number) => {
-  alert(id);
+const play = (path: string) => {
+  globalStore.setPlaying(path)
+  audioEvents?.emit('setSrc', path)
+  audioEvents?.emit('play')
+  globalStore.homePlageCtrl?.emit('init')
 };
 
-const onLike = () => {
-  alert("like");
-};
 
 const fetchAllSong = () => {
-  return testPlaylist;
+  fetch('http://localhost:5151/get-lib')
+    .then(response => {
+      return response.json()
+    })
+    .then(value => {
+      list.value = value
+      return value
+    })
+    .catch(error => {
+      console.error(error);
+    })
 };
 
-const testPlaylist = [
-  {
-    id: 1,
-    title: "Ode to Joy",
-    artist: "Beethoven",
-    duration: 243,
-    liked: true,
-  },
-  {
-    id: 2,
-    title: "Moonlight Sonata",
-    artist: "Beethoven",
-    duration: 332,
-    liked: false,
-  },
-  {
-    id: 3,
-    title: "Für Elise",
-    artist: "Beethoven",
-    duration: 181,
-    liked: false,
-  },
-  { id: 4, title: "Spring", artist: "Vivaldi", duration: 345, liked: true },
-  { id: 5, title: "Summer", artist: "Vivaldi", duration: 311, liked: false },
-  { id: 6, title: "Autumn", artist: "Vivaldi", duration: 330, liked: false },
-  { id: 7, title: "Winter", artist: "Vivaldi", duration: 288, liked: true },
-  {
-    id: 8,
-    title: "Air on the G String",
-    artist: "Bach",
-    duration: 358,
-    liked: false,
-  },
-  {
-    id: 9,
-    title: "Brandenburg Concerto No. 3",
-    artist: "Bach",
-    duration: 320,
-    liked: false,
-  },
-  {
-    id: 10,
-    title: "Goldberg Variations",
-    artist: "Bach",
-    duration: 544,
-    liked: true,
-  },
-  {
-    id: 11,
-    title: "Toccata and Fugue in D Minor",
-    artist: "Bach",
-    duration: 535,
-    liked: false,
-  },
-  {
-    id: 12,
-    title: "Prelude in C Major",
-    artist: "Bach",
-    duration: 142,
-    liked: true,
-  },
-  {
-    id: 13,
-    title: "Jesu, Joy of Man's Desiring",
-    artist: "Bach",
-    duration: 327,
-    liked: true,
-  },
-];
+const refresh = () => {
+  fetchAllSong()
+}
+
+onMounted(() => {
+  refresh()
+})
 </script>
 
 <style scoped>
